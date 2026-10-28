@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A fun fact of the day for curious kids. Pick a topic, learn something amazing, and say wow.">
+<meta name="theme-color" content="#E4EEFF">
+<style>
+/* base reset (the hosted preview supplied this; a standalone page needs it) */
+:root { color-scheme: light; }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Wow of the Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: one centred column. A sticker-book look: chunky outlines, hard offset shadows,
+   one bright colour per topic. Name -> topic grid -> fact card with two big buttons. */
+:root {
+  --bg: #E4EEFF;
+  --surface: #FFFFFF;
+  --ink: #1B1938;
+  --muted: #55527A;
+  --line: #1B1938;
+  --edge: #1B1938;
+  --shadow: #1B1938;
+  --link: #3B2FD0;
+  --note-bg: #FFF1B8;
+  --wow: #FFC933;
+  --on-color: #1B1938;
+  --c-space: #A596FF;
+  --c-animals: #FF9F43;
+  --c-body: #FF7A95;
+  --c-oceans: #36CDBF;
+  --c-dino: #86DB5E;
+  --c-science: #FFD84A;
+  --c-world: #55B0FF;
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12102A;
+    --surface: #211E47;
+    --ink: #F3F0FF;
+    --muted: #B7B2E0;
+    --line: #7C74D8;
+    --edge: #0A0820;
+    --shadow: #0A0820;
+    --link: #B2ABFF;
+    --note-bg: #3B3573;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12102A;
+  --surface: #211E47;
+  --ink: #F3F0FF;
+  --muted: #B7B2E0;
+  --line: #7C74D8;
+  --edge: #0A0820;
+  --shadow: #0A0820;
+  --link: #B2ABFF;
+  --note-bg: #3B3573;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.5;
+}
+h1, h2 { font-family: var(--font-display); font-weight: 800; line-height: 1.1; margin: 0; text-wrap: balance; }
+h1:focus, h2:focus { outline: none; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--link); outline-offset: 3px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding-block: 16px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.01em; }
+.brand b { color: var(--link); font-weight: 800; }
+.today { color: var(--muted); font-weight: 700; font-size: 15px; }
+
+.screen { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.screen[hidden] { display: none; }
+.screen h1 { font-size: clamp(32px, 8.5vw, 46px); }
+.lead { color: var(--muted); font-size: 19px; max-width: 46ch; }
+
+/* name form */
+.name-form { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+.name-form input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 24px;
+  padding: 14px 18px;
+  border: 3px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.name-form input::placeholder { color: var(--muted); font-weight: 700; }
+
+/* buttons */
+.btn {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.2;
+  text-align: center;
+  padding: 14px 22px;
+  min-height: 56px;
+  border: 3px solid var(--edge);
+  border-radius: 999px;
+  box-shadow: 0 5px 0 var(--edge);
+  transition: transform .12s, box-shadow .12s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--edge); }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--edge); }
+.btn-wow { background: var(--wow); color: var(--on-color); }
+.btn-knew { background: var(--surface); color: var(--ink); --edge: var(--line); }
+.link-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 10px 0;
+  min-height: 44px;
+}
+.link-btn.plain { align-self: flex-start; }
+
+/* topic grid */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding-bottom: 6px; }
+@media (min-width: 600px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tile {
+  appearance: none;
+  cursor: pointer;
+  background: var(--cat);
+  color: var(--on-color);
+  border: 3px solid var(--edge);
+  border-radius: 22px;
+  box-shadow: 0 5px 0 var(--edge);
+  padding: 14px 8px 12px;
+  min-height: 118px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform .12s, box-shadow .12s;
+}
+.tile:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--edge); }
+.tile:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--edge); }
+.tile svg { width: 46px; height: 46px; }
+.tile span { font-family: var(--font-display); font-weight: 800; font-size: 19px; line-height: 1.1; text-align: center; }
+.tile-surprise { --cat: var(--surface); --edge: var(--line); color: var(--ink); }
+
+/* fact screen */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.badge {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17px;
+  background: var(--surface);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 14px;
+}
+.badge i { font-style: normal; color: #E8A400; }
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 3px solid var(--line);
+  border-radius: 26px;
+  box-shadow: 6px 6px 0 var(--shadow);
+  overflow: hidden;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 18px;
+  background: var(--cat);
+  color: var(--on-color);
+  border-bottom: 3px solid var(--edge);
+}
+.card-head svg { width: 30px; height: 30px; flex: none; }
+.cat-name { font-family: var(--font-display); font-weight: 800; font-size: 21px; }
+.label { margin-left: auto; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.07em; }
+.card-body { padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 18px; }
+.note { background: var(--note-bg); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 16px; }
+.fact { font-weight: 800; font-size: clamp(22px, 5.6vw, 27px); line-height: 1.35; }
+.source { font-weight: 700; font-size: 16px; }
+.source a { color: var(--link); text-underline-offset: 3px; }
+.actions { display: flex; flex-direction: column; gap: 14px; padding-top: 4px; }
+.actions[hidden], .reaction[hidden] { display: none; }
+.reaction { display: flex; flex-direction: column; gap: 16px; }
+.reaction p { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1.2; text-wrap: balance; }
+.done { display: flex; flex-direction: column; gap: 16px; background: var(--surface); border: 3px solid var(--line); border-radius: 26px; box-shadow: 6px 6px 0 var(--shadow); padding: 24px 20px; }
+.done[hidden] { display: none; }
+.done h2 { font-size: 30px; }
+
+.burst { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.burst i {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  font-style: normal;
+  font-size: 26px;
+  color: var(--c);
+  -webkit-text-stroke: 1.5px var(--edge);
+  animation: pop .95s ease-out forwards;
+}
+@keyframes pop {
+  from { transform: translate(-50%, -50%) scale(.4); opacity: 1; }
+  to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2) rotate(var(--r)); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand">Wow of the <b>Day</b></div>
+    <div class="today" id="today"></div>
+  </header>
+
+  <section class="screen" id="s-name">
+    <h1 tabindex="-1">Hi there! What's your name?</h1>
+    <p class="lead">I know loads of amazing facts. Tell me your name and I'll find you a good one.</p>
+    <form class="name-form" id="nameForm" autocomplete="off">
+      <label class="sr" for="nameInput">Your name</label>
+      <input id="nameInput" type="text" maxlength="20" placeholder="Type your name here" autocomplete="given-name" required>
+      <button class="btn btn-wow" type="submit" id="nameGo">That's me!</button>
+    </form>
+  </section>
+
+  <section class="screen" id="s-cat" hidden>
+    <h1 tabindex="-1" id="catTitle">What do you want to learn about?</h1>
+    <p class="lead">Pick a topic and I'll find today's fact.</p>
+    <div class="grid" id="grid"></div>
+    <button class="link-btn plain" type="button" id="changeName">Not you? Change name</button>
+  </section>
+
+  <section class="screen" id="s-fact" hidden>
+    <h2 class="sr" tabindex="-1">Your fact</h2>
+    <div class="bar">
+      <button class="link-btn" type="button" id="backBtn">&larr; All topics</button>
+      <span class="badge" id="badge"><i>&#9733;</i> <span id="wowCount">0</span> wows</span>
+    </div>
+
+    <article class="card" id="card">
+      <div class="card-head">
+        <span id="cardIcon" aria-hidden="true"></span>
+        <span class="cat-name" id="cardCat"></span>
+        <span class="label" id="cardLabel"></span>
+      </div>
+      <div class="card-body">
+        <p class="note" id="note" hidden></p>
+        <p class="fact" id="factText"></p>
+        <p class="source"><a id="factLink" href="https://en.wikipedia.org/" target="_blank" rel="noopener noreferrer"></a></p>
+        <div class="actions" id="actions">
+          <button class="btn btn-wow" type="button" id="btnWow">Wow, that's so cool!</button>
+          <button class="btn btn-knew" type="button" id="btnKnew">I already knew this one, tell me another :)</button>
+        </div>
+        <div class="reaction" id="reaction" hidden>
+          <p id="reactionText" aria-live="polite"></p>
+          <div class="actions">
+            <button class="btn btn-wow" type="button" id="btnNext">Show me another!</button>
+            <button class="btn btn-knew" type="button" id="btnTopics">Pick a new topic</button>
+          </div>
+        </div>
+      </div>
+      <div class="burst" id="burst" aria-hidden="true"></div>
+    </article>
+
+    <div class="done" id="done" hidden>
+      <h2 id="doneTitle"></h2>
+      <p class="lead" id="doneText"></p>
+      <div class="actions">
+        <button class="btn btn-wow" type="button" id="btnAgain">Read them again</button>
+        <button class="btn btn-knew" type="button" id="btnDoneTopics">Pick a new topic</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var WIKI = 'https://en.wikipedia.org/wiki/';
+  var STORE = 'wowOfTheDay';
+
+  var SW = 'stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  var ICONS = {
+    space: '<svg viewBox="0 0 48 48" ' + SW + '><circle cx="24" cy="24" r="10"/><ellipse cx="24" cy="24" rx="20" ry="7" transform="rotate(-20 24 24)"/></svg>',
+    animals: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M24 26c-6 0-10 5-10 9 0 3 3 4 5 4 2 0 3-1 5-1s3 1 5 1c2 0 5-1 5-4 0-4-4-9-10-9z"/><circle cx="12" cy="22" r="3.5"/><circle cx="19.5" cy="14" r="3.5"/><circle cx="28.5" cy="14" r="3.5"/><circle cx="36" cy="22" r="3.5"/></svg>',
+    body: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M24 41C8 30 6 19 13 14c5-3 9 0 11 4 2-4 6-7 11-4 7 5 5 16-11 27z"/></svg>',
+    oceans: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M4 14q5-6 10 0t10 0 10 0 10 0"/><path d="M4 25q5-6 10 0t10 0 10 0 10 0"/><path d="M4 36q5-6 10 0t10 0 10 0 10 0"/></svg>',
+    dino: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M24 6c8 0 14 13 14 22a14 14 0 0 1-28 0C10 19 16 6 24 6z"/><path d="M11 28l6-5 5 6 5-6 10 5"/></svg>',
+    science: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M19 6h10M21 6v12L9 38a3 3 0 0 0 3 5h24a3 3 0 0 0 3-5L27 18V6"/><path d="M14 32h20"/></svg>',
+    world: '<svg viewBox="0 0 48 48" ' + SW + '><circle cx="24" cy="24" r="18"/><ellipse cx="24" cy="24" rx="8" ry="18"/><path d="M6 24h36M9 14h30M9 34h30"/></svg>',
+    surprise: '<svg viewBox="0 0 48 48" ' + SW + '><path d="M24 5l5.5 12 13 1.5-9.7 8.8 2.7 12.9L24 33.6 12.5 40.2l2.7-12.9L5.5 18.5l13-1.5z"/></svg>'
+  };
+
+  // Each fact: [text, Wikipedia article title]
+  var CATS = [
+    { key: 'space', name: 'Space', color: 'var(--c-space)', facts: [
+      ['A day on Venus is longer than its year! Venus spins so slowly that one turn takes about 243 Earth days, but it zooms around the Sun in just 225.', 'Venus'],
+      ['A teaspoon of neutron star would weigh about a billion tonnes. That is as heavy as a huge mountain!', 'Neutron_star'],
+      ['The Sun is so big that more than a million Earths could fit inside it.', 'Sun'],
+      ['Astronaut footprints on the Moon can last for a very, very long time, because there is no wind or rain up there to wash them away.', 'Moon'],
+      ['Jupiter’s Great Red Spot is a giant storm wider than the whole Earth, and it has been swirling for at least 150 years.', 'Great_Red_Spot'],
+      ['Saturn is so light for its size that it would float if you could find a bathtub big enough to put it in.', 'Saturn'],
+      ['Sunlight takes about 8 minutes to reach Earth. So the Sun you see is how it looked 8 minutes ago!', 'Sunlight'],
+      ['Space is completely silent. Sound needs air to travel through, and space has almost none.', 'Outer_space']
+    ]},
+    { key: 'animals', name: 'Animals', color: 'var(--c-animals)', facts: [
+      ['An octopus has three hearts and blue blood!', 'Octopus'],
+      ['Sloths move so slowly that they only climb down from their tree about once a week, for a toilet trip.', 'Sloth'],
+      ['A group of flamingos is called a flamboyance.', 'Flamingo'],
+      ['Wombats make cube-shaped poo. They are the only animal known to do it!', 'Wombat'],
+      ['Hummingbirds can fly backwards and hover in one spot, and their wings flap dozens of times every second.', 'Hummingbird'],
+      ['The blue whale is the biggest animal that has ever lived. It is even bigger than the biggest dinosaurs we know of.', 'Blue_whale'],
+      ['Crows can remember human faces, and they can remember who was unkind to them.', 'Crow'],
+      ['A giraffe’s tongue is about 45 centimetres long, and it is dark purple, which may help protect it from sunburn.', 'Giraffe']
+    ]},
+    { key: 'body', name: 'Human Body', color: 'var(--c-body)', facts: [
+      ['Your heart beats about 100,000 times every day, even while you sleep.', 'Heart'],
+      ['Babies are born with about 300 bones, but grown-ups have only 206, because some bones join together as you grow.', 'Human_skeleton'],
+      ['Your brain is a small part of your body, but it uses about one-fifth of all your energy.', 'Human_brain'],
+      ['No two people have the same fingerprints, not even identical twins.', 'Fingerprint'],
+      ['The smallest bone in your body is in your ear. It is called the stirrup, and it is smaller than a grain of rice.', 'Stapes'],
+      ['Your skin is your body’s biggest organ, and you grow a whole new outer layer about every month.', 'Skin'],
+      ['When you were born, your kneecaps were soft cartilage. They slowly turn into hard bone when you are a few years old.', 'Patella'],
+      ['You blink about 15 to 20 times every minute, which keeps your eyes wet and clean.', 'Blinking']
+    ]},
+    { key: 'oceans', name: 'Oceans', color: 'var(--c-oceans)', facts: [
+      ['More than 70 out of every 100 parts of Earth’s surface are covered by ocean.', 'Ocean'],
+      ['The Mariana Trench is nearly 11 kilometres deep. If you dropped Mount Everest in, it would still have about 2 kilometres of water above it!', 'Mariana_Trench'],
+      ['The Great Barrier Reef, off the coast of Australia, is the biggest coral reef on Earth. It is built by tiny living animals called corals, and it is so big you can see it from space.', 'Great_Barrier_Reef'],
+      ['Jellyfish have no brain, no heart and no bones. They have been floating around the oceans for hundreds of millions of years, so they are older than the dinosaurs.', 'Jellyfish'],
+      ['Sea otters sometimes hold hands while they sleep, so they do not drift apart.', 'Sea_otter'],
+      ['Seahorse dads have the babies! The mum puts her eggs in the dad’s pouch, and he carries them until they are ready to be born.', 'Seahorse'],
+      ['Dolphins sleep with half of their brain at a time, and one eye stays open.', 'Dolphin'],
+      ['Deep-sea anglerfish have their own built-in light that glows on a stalk to lure in other fish.', 'Anglerfish']
+    ]},
+    { key: 'dino', name: 'Dinosaurs', color: 'var(--c-dino)', facts: [
+      ['The biggest T. rex teeth were about 30 centimetres long, including the root. That is as long as a school ruler!', 'Tyrannosaurus'],
+      ['Dinosaurs did not completely disappear. Birds are living dinosaurs, so a pigeon is a tiny dinosaur!', 'Origin_of_birds'],
+      ['T. rex lived closer in time to us than it did to Stegosaurus!', 'Stegosaurus'],
+      ['Argentinosaurus was one of the biggest land animals ever. It may have weighed as much as ten elephants!', 'Argentinosaurus'],
+      ['Dinosaur fossils have been found on every continent, even icy Antarctica.', 'Dinosaur'],
+      ['The real Velociraptor was about the size of a turkey, and it had feathers!', 'Velociraptor'],
+      ['Triceratops means “three-horned face”. It had a big bony frill around its neck and three horns on its face.', 'Triceratops'],
+      ['The word “dinosaur” means “terrible lizard”. A scientist called Richard Owen invented it in 1842.', 'Dinosaur']
+    ]},
+    { key: 'science', name: 'Science', color: 'var(--c-science)', facts: [
+      ['Honey almost never goes bad. People have found pots of honey in ancient Egyptian tombs that is thousands of years old.', 'Honey'],
+      ['A bolt of lightning can be about five times hotter than the surface of the Sun.', 'Lightning'],
+      ['Bananas are very slightly radioactive, but it is such a tiny amount that they are completely safe to eat.', 'Banana_equivalent_dose'],
+      ['The first computer “bug” was a real moth! In 1947, engineers found one stuck inside a computer and taped it into their logbook.', 'Software_bug'],
+      ['Rainbows are really full circles. From the ground we only see the top half, because the ground gets in the way.', 'Rainbow'],
+      ['Sound travels about four times faster through water than through air.', 'Speed_of_sound'],
+      ['Earth is not perfectly round. It bulges a little around the middle, like a ball someone has sat on.', 'Earth'],
+      ['In a special science chamber, water can boil and freeze at the very same time.', 'Triple_point']
+    ]},
+    { key: 'world', name: 'Our World', color: 'var(--c-world)', facts: [
+      ['Mount Everest is still growing. It gets a few millimetres taller every year.', 'Mount_Everest'],
+      ['Russia is so wide that it has 11 different time zones.', 'Time_in_Russia'],
+      ['Vatican City is the smallest country in the world. You could walk all the way around it in under an hour.', 'Vatican_City'],
+      ['People often say you can see the Great Wall of China from space, but that is a myth. It is much too thin to spot with just your eyes.', 'Great_Wall_of_China'],
+      ['Antarctica is a desert! It gets so little rain and snow that it is the driest continent, even though it is covered in ice.', 'Antarctica'],
+      ['The Great Pyramid in Egypt was the tallest building in the world for about 3,800 years.', 'Great_Pyramid_of_Giza'],
+      ['The Sahara Desert used to be green, with grass, lakes and animals, thousands of years ago.', 'African_humid_period'],
+      ['Nepal has the only national flag in the world that is not a rectangle or a square.', 'Flag_of_Nepal']
+    ]}
+  ];
+
+  var WOW = [
+    'Woohoo, {n}! Your brain just got a tiny bit bigger.',
+    'Right?! That is amazing, {n}!',
+    'Boom! Another wow for {n}.',
+    'Cool, isn’t it? You can tell your friends that one, {n}!',
+    'Mind blown, {n}!'
+  ];
+  var KNEW = [
+    'Clever you, {n}! Let’s find one you don’t know.',
+    'Brilliant, {n}! You’re a real expert. Try this one.',
+    'You knew that one already, {n}? Impressive! How about this?',
+    'Smarty pants! Let’s see if this one surprises you, {n}.'
+  ];
+
+  function $(id) { return document.getElementById(id); }
+
+  // ---- saved state (per browser, optional) ----
+  var saved = { name: '', seen: {}, wows: 0 };
+  try {
+    var raw = localStorage.getItem(STORE);
+    if (raw) {
+      var o = JSON.parse(raw);
+      if (o && typeof o === 'object') {
+        if (typeof o.name === 'string') saved.name = o.name.slice(0, 20);
+        saved.wows = Number(o.wows) || 0;
+        if (o.seen && typeof o.seen === 'object') {
+          Object.keys(o.seen).forEach(function (k) {
+            if (Array.isArray(o.seen[k])) saved.seen[k] = o.seen[k].filter(function (n) { return typeof n === 'number'; });
+          });
+        }
+      }
+    }
+  } catch (e) {}
+  function persist() { try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch (e) {} }
+
+  var current = { cat: null, idx: -1 };
+
+  function seenList(key) { return saved.seen[key] || (saved.seen[key] = []); }
+  function remaining(cat) { return cat.facts.length - seenList(cat.key).length; }
+  function dayIndex() {
+    var d = new Date();
+    return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  }
+  // Same fact for the same topic on the same day, a different one tomorrow.
+  function nextIndex(cat) {
+    var n = cat.facts.length, start = dayIndex() % n, seen = seenList(cat.key);
+    for (var k = 0; k < n; k++) {
+      var i = (start + k) % n;
+      if (seen.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+  function say(t) { return t.replace(/\{n\}/g, saved.name); }
+  function markSeen() {
+    var l = seenList(current.cat.key);
+    if (l.indexOf(current.idx) === -1) l.push(current.idx);
+  }
+  function updateBadge() { $('wowCount').textContent = String(saved.wows); }
+
+  // ---- screens ----
+  var screens = ['s-name', 's-cat', 's-fact'];
+  function showScreen(id) {
+    screens.forEach(function (s) { $(s).hidden = (s !== id); });
+    var h = $(id).querySelector('h1,h2');
+    if (h) { try { h.focus({ preventScroll: true }); } catch (e) {} }
+    window.scrollTo(0, 0);
+  }
+
+  function goTopics() {
+    $('catTitle').textContent = 'Hi ' + saved.name + '! What do you want to learn about?';
+    showScreen('s-cat');
+  }
+
+  function buildGrid() {
+    var grid = $('grid');
+    CATS.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tile';
+      b.style.setProperty('--cat', c.color);
+      b.innerHTML = ICONS[c.key];
+      var s = document.createElement('span');
+      s.textContent = c.name;
+      b.appendChild(s);
+      b.addEventListener('click', function () { openCategory(c.key); });
+      grid.appendChild(b);
+    });
+    var r = document.createElement('button');
+    r.type = 'button';
+    r.className = 'tile tile-surprise';
+    r.innerHTML = ICONS.surprise;
+    var rs = document.createElement('span');
+    rs.textContent = 'Surprise me!';
+    r.appendChild(rs);
+    r.addEventListener('click', function () { openCategory('surprise'); });
+    grid.appendChild(r);
+  }
+
+  function openCategory(key) {
+    var cat = null;
+    if (key === 'surprise') {
+      var open = CATS.filter(function (c) { return remaining(c) > 0; });
+      if (!open.length) { current.cat = null; showScreen('s-fact'); showDone(null); return; }
+      cat = pick(open);
+    } else {
+      cat = CATS.filter(function (c) { return c.key === key; })[0];
+    }
+    current.cat = cat;
+    showScreen('s-fact');
+    renderFact(key === 'surprise' ? 'Surprise!' : 'Today’s fact', '');
+  }
+
+  function renderFact(label, note) {
+    var cat = current.cat;
+    var i = nextIndex(cat);
+    if (i < 0) { showDone(cat); return; }
+    current.idx = i;
+    var card = $('card');
+    card.hidden = false;
+    $('done').hidden = true;
+    card.style.setProperty('--cat', cat.color);
+    $('cardIcon').innerHTML = ICONS[cat.key];
+    $('cardCat').textContent = cat.name;
+    $('cardLabel').textContent = label;
+    var f = cat.facts[i];
+    $('factText').textContent = f[0];
+    var a = $('factLink');
+    a.href = WIKI + f[1];
+    a.textContent = 'More about ' + f[1].replace(/_/g, ' ') + ' (Wikipedia) ↗';
+    var n = $('note');
+    n.textContent = note || '';
+    n.hidden = !note;
+    $('actions').hidden = false;
+    $('reaction').hidden = true;
+    updateBadge();
+  }
+
+  function showDone(cat) {
+    $('card').hidden = true;
+    $('done').hidden = false;
+    if (cat) {
+      $('doneTitle').textContent = 'You’ve read every ' + cat.name.toLowerCase() + ' fact, ' + saved.name + '!';
+      $('doneText').textContent = 'You are officially a ' + cat.name.toLowerCase() + ' expert. Read them again, or try another topic.';
+    } else {
+      $('doneTitle').textContent = 'You’ve read every fact, ' + saved.name + '!';
+      $('doneText').textContent = 'That is every topic finished. Amazing! Start again whenever you like.';
+    }
+    updateBadge();
+  }
+
+  function burst() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var b = $('burst');
+    b.innerHTML = '';
+    var colors = CATS.map(function (c) { return c.color; });
+    var count = 14;
+    for (var k = 0; k < count; k++) {
+      var s = document.createElement('i');
+      s.textContent = '★';
+      var ang = (Math.PI * 2 * k) / count;
+      var d = 90 + Math.random() * 70;
+      s.style.setProperty('--c', colors[k % colors.length]);
+      s.style.setProperty('--dx', Math.round(Math.cos(ang) * d) + 'px');
+      s.style.setProperty('--dy', Math.round(Math.sin(ang) * d) + 'px');
+      s.style.setProperty('--r', Math.round(Math.random() * 180 - 90) + 'deg');
+      b.appendChild(s);
+    }
+    setTimeout(function () { b.innerHTML = ''; }, 1000);
+  }
+
+  // ---- events ----
+  $('nameForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = $('nameInput').value.replace(/\s+/g, ' ').trim();
+    if (!v) { $('nameInput').focus(); return; }
+    saved.name = v.slice(0, 20);
+    persist();
+    goTopics();
+  });
+
+  $('changeName').addEventListener('click', function () {
+    $('nameInput').value = saved.name;
+    showScreen('s-name');
+    $('nameInput').focus();
+  });
+
+  $('backBtn').addEventListener('click', goTopics);
+  $('btnTopics').addEventListener('click', goTopics);
+  $('btnDoneTopics').addEventListener('click', goTopics);
+
+  $('btnWow').addEventListener('click', function () {
+    markSeen();
+    saved.wows += 1;
+    persist();
+    updateBadge();
+    $('reactionText').textContent = say(pick(WOW));
+    $('actions').hidden = true;
+    $('reaction').hidden = false;
+    burst();
+    $('btnNext').focus({ preventScroll: true });
+  });
+
+  $('btnKnew').addEventListener('click', function () {
+    markSeen();
+    persist();
+    renderFact('Try this one', say(pick(KNEW)));
+  });
+
+  $('btnNext').addEventListener('click', function () {
+    renderFact('Another one!', '');
+  });
+
+  $('btnAgain').addEventListener('click', function () {
+    if (current.cat) {
+      saved.seen[current.cat.key] = [];
+      persist();
+      renderFact('Today’s fact', '');
+    } else {
+      saved.seen = {};
+      persist();
+      goTopics();
+    }
+  });
+
+  // ---- start ----
+  try {
+    $('today').textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  } catch (e) {}
+  buildGrid();
+  updateBadge();
+  if (saved.name) { goTopics(); }
+  else { showScreen('s-name'); }
+})();
+</script>
+</body>
+</html>
